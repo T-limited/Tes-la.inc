@@ -1,292 +1,539 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TESLA Ltd</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>T Stock — Tesla Personal Plans</title>
+
+    <!-- Tailwind CDN for quick styling -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
     <style>
-        :root {
-            --tesla-red: #E31937;
+        :root{
+            --brand-dark:#7b0000;
+            --brand-mid:#c21b1b;
+            --brand-light:#ff4d4d;
+            --accent:#ffb3b3;
         }
-        body {
-            background-color: #000;
-            color: #fff;
-            font-family: 'Inter', sans-serif;
+        body { font-family: 'Inter', sans-serif; background: #0b0b0b; color: #fff; }
+
+        /* red gradient brand */
+        .brand-gradient {
+            background: linear-gradient(135deg,var(--brand-dark) 0%,var(--brand-mid) 60%,var(--brand-light) 100%);
         }
-        .font-orbitron { font-family: 'Orbitron', sans-serif; }
-        .bg-tesla-red { background-color: var(--tesla-red); }
-        .text-tesla-red { color: var(--tesla-red); }
-        .border-tesla-red { border-color: var(--tesla-red); }
-        
-        .glass-card {
-            background: rgba(23, 23, 23, 0.8);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+        .btn-brand {
+            background: linear-gradient(90deg,var(--brand-mid),var(--brand-light));
+            color: white;
         }
 
-        @keyframes spin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-        .animate-spin-slow {
-            animation: spin 2s linear infinite;
+        .circle-logo {
+            width:64px;
+            height:64px;
+            border-radius:9999px;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            background: radial-gradient(circle at 30% 20%, var(--brand-light), var(--brand-mid) 60%, var(--brand-dark));
+            box-shadow: 0 6px 18px rgba(194,27,27,0.28), inset 0 -6px 18px rgba(0,0,0,0.15);
+            border: 2px solid rgba(255,255,255,0.06);
+            font-family: 'Outfit', sans-serif;
+            font-weight:700;
+            color: white;
+            font-size:28px;
+            text-transform:uppercase;
         }
 
-        .step-hidden { display: none; }
-        
-        ::-webkit-scrollbar { width: 5px; }
-        ::-webkit-scrollbar-track { background: #000; }
-        ::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
+        .card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.04); border-radius:14px; }
+
+        .badge {
+            background: rgba(255,255,255,0.04);
+            color:var(--brand-light);
+            padding:6px 10px;
+            border-radius:999px;
+            font-weight:700;
+            font-size:11px;
+        }
+
+        /* professional touches */
+        .muted { color: rgba(255,255,255,0.6); }
+        .small { font-size:12px; }
+        .note { background: rgba(255,255,255,0.02); padding:8px; border-radius:8px; font-size:12px; }
+
+        /* gear animation reused */
+        .gear { width:86px; height:86px; animation: spin-gear 6s linear; animation-fill-mode:forwards; }
+        @keyframes spin-gear { from { transform: rotate(0); } to { transform: rotate(2160deg); } }
+
+        /* form required marker */
+        .required::after { content: " *"; color: #ffb3b3; font-weight:700; }
+
+        /* responsive tweaks */
+        @media (max-width: 768px) {
+            .circle-logo { width:56px; height:56px; font-size:22px; }
+        }
     </style>
 </head>
-<body class="bg-black text-white min-h-screen">
+<body>
 
-    <div class="flex h-screen overflow-hidden">
-        <!-- Sidebar -->
-        <aside class="w-64 glass-card border-r border-white/10 flex flex-col hidden md:flex">
-            <div class="p-6">
-                <div class="flex items-center gap-2 mb-8">
-                    <svg viewBox="0 0 24 24" class="w-8 h-8 fill-tesla-red">
-                        <path d="M11.99 1.14c-5.99 0-10.84 4.85-10.84 10.84s4.85 10.84 10.84 10.84 10.84-4.85 10.84-10.84-4.85-10.84-10.84-10.84zm0 20.18c-5.15 0-9.34-4.19-9.34-9.34s4.19-9.34 9.34-9.34 9.34 4.19 9.34 9.34-4.19 9.34-9.34 9.34zm0-16.14c-3.75 0-6.8 3.05-6.8 6.8s3.05 6.8 6.8 6.8 6.8-3.05 6.8-6.8-3.05-6.8-6.8-6.8zm0 12.1c-2.92 0-5.3-2.38-5.3-5.3s2.38-5.3 5.3-5.3 5.3 2.38 5.3 5.3-2.38 5.3-5.3 5.3z"/>
-                    </svg>
-                    <span class="font-orbitron font-bold tracking-tighter text-xl">TESLA</span>
-                </div>
-                
-                <nav class="space-y-2">
-                    <a href="#" class="flex items-center gap-3 px-4 py-3 bg-tesla-red rounded-lg text-white">
-                        <i data-lucide="wallet" class="w-5 h-5"></i>
-                        <span>Wallet</span>
-                    </a>
-                    <a href="#" class="flex items-center gap-3 px-4 py-3 text-neutral-400 hover:text-white hover:bg-white/5 rounded-lg transition">
-                        <i data-lucide="bar-chart-3" class="w-5 h-5"></i>
-                        <span>Assets</span>
-                    </a>
-                    <a href="#" class="flex items-center gap-3 px-4 py-3 text-neutral-400 hover:text-white hover:bg-white/5 rounded-lg transition">
-                        <i data-lucide="history" class="w-5 h-5"></i>
-                        <span>History</span>
-                    </a>
-                    <a href="#" class="flex items-center gap-3 px-4 py-3 text-neutral-400 hover:text-white hover:bg-white/5 rounded-lg transition">
-                        <i data-lucide="settings" class="w-5 h-5"></i>
-                        <span>Settings</span>
-                    </a>
-                </nav>
+<script>lucide && lucide.createIcons && lucide.createIcons();</script>
+
+<!-- NAV / HEADER -->
+<header class="sticky top-0 z-50 brand-gradient/90">
+    <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+        <div class="flex items-center gap-4">
+            <div class="circle-logo" title="T Stock">T</div>
+            <div>
+                <div class="text-white font-bold uppercase tracking-wider">T Stock</div>
+                <div class="text-xs muted">Tesla Personal Plans</div>
             </div>
-            
-            <div class="mt-auto p-6">
-                <div class="glass-card p-4 rounded-xl border-white/5">
-                    <p class="text-xs text-neutral-500 mb-1">Status</p>
-                    <div class="flex items-center gap-2">
-                        <div class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
-                        <span class="text-sm font-medium">Secured Node</span>
-                    </div>
-                </div>
-            </div>
-        </aside>
+        </div>
 
-        <!-- Main Content -->
-        <main class="flex-1 overflow-y-auto p-4 md:p-8">
-            <header class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
-                <div>
-                    <h1 class="text-2xl font-orbitron font-bold">DASHBOARD</h1>
-                    <p class="text-neutral-500">Welcome back, Investor</p>
-                </div>
-                <div class="flex items-center gap-4">
-                    <div class="flex items-center gap-2 bg-neutral-900 px-4 py-2 rounded-full border border-white/5">
-                        <i data-lucide="bell" class="w-4 h-4 text-neutral-400"></i>
-                        <div class="w-px h-4 bg-white/10 mx-1"></div>
-                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Tesla" class="w-6 h-6 rounded-full" alt="User">
-                        <span class="text-sm font-medium">User_721</span>
-                    </div>
-                </div>
-            </header>
-
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-                <div class="lg:col-span-2 glass-card p-8 rounded-3xl relative overflow-hidden">
-                    <div class="absolute top-0 right-0 p-8">
-                        <i data-lucide="shield-check" class="w-12 h-12 text-tesla-red/20"></i>
-                    </div>
-                    <p class="text-neutral-400 mb-2">Total Holdings</p>
-                    <h2 class="text-5xl font-orbitron font-bold mb-6">$0.00</h2>
-                    <div class="flex gap-4">
-                        <button onclick="openFundModal()" class="flex items-center gap-2 bg-tesla-red px-6 py-3 rounded-xl font-bold hover:bg-red-700 transition active:scale-95">
-                            <i data-lucide="plus-circle" class="w-5 h-5"></i>
-                            Fund Account
-                        </button>
-                        <button class="flex items-center gap-2 bg-white/5 px-6 py-3 rounded-xl font-bold border border-white/10 hover:bg-white/10 transition">
-                            <i data-lucide="arrow-up-right" class="w-5 h-5"></i>
-                            Withdraw
-                        </button>
-                    </div>
-                </div>
-                
-                <div class="glass-card p-6 rounded-3xl flex flex-col justify-center items-center text-center">
-                    <div class="w-16 h-16 bg-tesla-red/10 rounded-full flex items-center justify-center mb-4">
-                        <i data-lucide="trending-up" class="w-8 h-8 text-tesla-red"></i>
-                    </div>
-                    <h3 class="font-bold text-lg">Daily ROI</h3>
-                    <p class="text-neutral-500 text-sm">Automated tracking active</p>
-                    <p class="text-green-500 font-orbitron mt-2">+0.00%</p>
-                </div>
+        <div class="flex items-center gap-4">
+            <div class="card px-4 py-2 flex items-center gap-3">
+                <div class="text-xs muted">Holdings</div>
+                <div id="dashboard-balance" class="font-bold text-xl">$0.00</div>
             </div>
 
-            <h3 class="text-xl font-orbitron font-bold mb-4">ASSETS</h3>
-            <div class="glass-card rounded-3xl overflow-hidden border-white/5">
-                <table class="w-full text-left">
-                    <thead>
-                        <tr class="border-b border-white/5 text-neutral-500 text-sm">
-                            <th class="p-6">Asset</th>
-                            <th class="p-6">Balance</th>
-                            <th class="p-6">Price</th>
-                            <th class="p-6 text-right">Change</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-white/5">
-                        <tr>
-                            <td class="p-6">
-                                <div class="flex items-center gap-3">
-                                    <div class="w-10 h-10 bg-orange-500/20 rounded-full flex items-center justify-center">
-                                        <i data-lucide="bitcoin" class="w-6 h-6 text-orange-500"></i>
-                                    </div>
-                                    <div><p class="font-bold">Bitcoin</p><p class="text-xs text-neutral-500">BTC</p></div>
-                                </div>
-                            </td>
-                            <td class="p-6">0.00000000</td><td class="p-6">$42,850.21</td><td class="p-6 text-right text-green-500">+1.2%</td>
-                        </tr>
-                        <tr>
-                            <td class="p-6">
-                                <div class="flex items-center gap-3">
-                                    <div class="w-10 h-10 bg-blue-500/20 rounded-full flex items-center justify-center">
-                                        <i data-lucide="coins" class="w-6 h-6 text-blue-500"></i>
-                                    </div>
-                                    <div><p class="font-bold">Ethereum</p><p class="text-xs text-neutral-500">ETH</p></div>
-                                </div>
-                            </td>
-                            <td class="p-6">0.00000000</td><td class="p-6">$2,540.88</td><td class="p-6 text-right text-red-500">-0.5%</td>
-                        </tr>
-                        <tr>
-                            <td class="p-6">
-                                <div class="flex items-center gap-3">
-                                    <div class="w-10 h-10 bg-green-500/20 rounded-full flex items-center justify-center">
-                                        <i data-lucide="dollar-sign" class="w-6 h-6 text-green-500"></i>
-                                    </div>
-                                    <div><p class="font-bold">Tether</p><p class="text-xs text-neutral-500">USDT</p></div>
-                                </div>
-                            </td>
-                            <td class="p-6">0.00</td><td class="p-6">$1.00</td><td class="p-6 text-right text-neutral-500">0.00%</td>
-                        </tr>
-                        <tr>
-                            <td class="p-6">
-                                <div class="flex items-center gap-3">
-                                    <div class="w-10 h-10 bg-yellow-500/20 rounded-full flex items-center justify-center">
-                                        <i data-lucide="zap" class="w-6 h-6 text-yellow-500"></i>
-                                    </div>
-                                    <div><p class="font-bold">BNB</p><p class="text-xs text-neutral-500">BNB</p></div>
-                                </div>
-                            </td>
-                            <td class="p-6">0.00</td><td class="p-6">$312.45</td><td class="p-6 text-right text-green-500">+2.4%</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </main>
-    </div>
+            <button onclick="openFundModal()" class="btn-brand px-4 py-2 rounded-lg font-bold uppercase shadow-lg hover:opacity-95">
+                Fund Account
+            </button>
 
-    <!-- FUNDING MODAL -->
-    <div id="fundModal" class="fixed inset-0 bg-black/90 backdrop-blur-md z-[1000] flex items-center justify-center p-4 hidden">
-        <div class="max-w-2xl w-full glass-card rounded-3xl overflow-hidden border-white/20">
-            <div id="step1" class="p-8">
-                <div class="flex justify-between items-center mb-6">
-                    <h2 class="text-2xl font-orbitron font-bold">SELECT PLAN</h2>
-                    <button onclick="closeFundModal()" class="text-neutral-500 hover:text-white transition"><i data-lucide="x" class="w-6 h-6"></i></button>
+            <div id="nav-user" class="flex items-center gap-3">
+                <div id="nav-avatar" class="w-10 h-10 rounded-full bg-white/5 border border-white/5 flex items-center justify-center">
+                    <span class="text-sm muted">G</span>
                 </div>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 max-h-[60vh] overflow-y-auto pr-2">
-                    <button onclick="nextStep(2)" class="text-left glass-card p-6 rounded-2xl hover:border-tesla-red transition">
-                        <p class="text-tesla-red font-bold text-xs uppercase mb-1">Entry Tier</p>
-                        <h4 class="text-lg font-bold">Invest $500</h4>
-                        <p class="text-neutral-400 text-sm">Returns: $5,000</p>
-                    </button>
-                    <button onclick="nextStep(2)" class="text-left glass-card p-6 rounded-2xl hover:border-tesla-red transition">
-                        <p class="text-tesla-red font-bold text-xs uppercase mb-1">Elite Tier</p>
-                        <h4 class="text-lg font-bold">Invest $5,000</h4>
-                        <p class="text-neutral-400 text-sm">Returns: $75,000</p>
-                    </button>
-                    <button onclick="nextStep(2)" class="text-left glass-card p-6 rounded-2xl hover:border-tesla-red transition">
-                        <p class="text-orange-500 font-bold text-xs uppercase mb-1">Crypto Tier</p>
-                        <h4 class="text-lg font-bold">Invest 1 BTC</h4>
-                        <p class="text-neutral-400 text-sm">Returns: 5 BTC</p>
-                    </button>
+                <div class="text-right">
+                    <div id="nav-user-name" class="text-sm font-bold">Guest</div>
+                    <div class="text-xs muted">Member</div>
                 </div>
-            </div>
-
-            <div id="step2" class="p-8 step-hidden">
-                <h2 class="text-2xl font-orbitron font-bold mb-6">CHOOSE METHOD</h2>
-                <div class="space-y-4">
-                    <button onclick="startSpinning('BTC')" class="w-full flex items-center justify-between glass-card p-6 rounded-2xl hover:border-tesla-red transition">
-                        <div class="flex items-center gap-4"><i data-lucide="bitcoin" class="w-8 h-8 text-orange-500"></i><span class="text-xl font-bold">Bitcoin (BTC)</span></div>
-                        <i data-lucide="chevron-right"></i>
-                    </button>
-                    <button onclick="startSpinning('USDT')" class="w-full flex items-center justify-between glass-card p-6 rounded-2xl hover:border-tesla-red transition">
-                        <div class="flex items-center gap-4"><i data-lucide="dollar-sign" class="w-8 h-8 text-green-500"></i><span class="text-xl font-bold">Tether (USDT)</span></div>
-                        <i data-lucide="chevron-right"></i>
-                    </button>
-                </div>
-            </div>
-
-            <div id="step3" class="p-16 step-hidden flex flex-col items-center justify-center">
-                <svg viewBox="0 0 24 24" class="w-24 h-24 fill-tesla-red animate-spin-slow mb-8"><path d="M11.99 1.14c-5.99 0-10.84 4.85-10.84 10.84s4.85 10.84 10.84 10.84 10.84-4.85 10.84-10.84-4.85-10.84-10.84-10.84zm0 20.18c-5.15 0-9.34-4.19-9.34-9.34s4.19-9.34 9.34-9.34 9.34 4.19 9.34 9.34-4.19 9.34-9.34 9.34zm0-16.14c-3.75 0-6.8 3.05-6.8 6.8s3.05 6.8 6.8 6.8 6.8-3.05 6.8-6.8-3.05-6.8-6.8-6.8zm0 12.1c-2.92 0-5.3-2.38-5.3-5.3s2.38-5.3 5.3-5.3 5.3 2.38 5.3 5.3-2.38 5.3-5.3 5.3z"/></svg>
-                <p class="font-orbitron font-bold text-xl tracking-widest text-tesla-red">GENERATING SECURE ADDRESS</p>
-            </div>
-
-            <div id="step4" class="p-8 step-hidden">
-                <h2 class="text-2xl font-orbitron font-bold mb-6">DEPOSIT ASSETS</h2>
-                <div class="bg-black/50 p-6 rounded-2xl border border-white/10 mb-6">
-                    <p class="text-neutral-500 text-sm mb-2" id="methodLabel">BTC Address</p>
-                    <div class="flex items-center justify-between gap-4">
-                        <code class="text-tesla-red font-bold text-lg break-all" id="walletAddress">bc1qguvzp38e4065dugw53hwxpuvtxf9tcmpe0yccv</code>
-                        <button onclick="copyAddress()" class="p-2 hover:bg-white/10 rounded-lg transition"><i data-lucide="copy" class="w-5 h-5"></i></button>
-                    </div>
-                </div>
-                <div class="mb-8">
-                    <p class="text-neutral-400 text-sm mb-4">Upload payment screenshot:</p>
-                    <label class="w-full h-32 border-2 border-dashed border-white/10 rounded-2xl flex flex-col items-center justify-center cursor-pointer hover:border-tesla-red/50 bg-white/5">
-                        <i data-lucide="upload-cloud" class="w-8 h-8 text-neutral-500 mb-2"></i>
-                        <span class="text-sm text-neutral-500">Tap to upload proof</span>
-                        <input type="file" class="hidden" onchange="document.getElementById('fileName').classList.remove('hidden')">
-                    </label>
-                    <p id="fileName" class="text-xs text-green-500 mt-2 hidden">Screenshot attached!</p>
-                </div>
-                <button onclick="confirmPayment()" class="w-full bg-tesla-red py-4 rounded-xl font-bold text-lg hover:bg-red-700 transition">I have paid, confirm my deposit</button>
-            </div>
-
-            <div id="step5" class="p-16 step-hidden flex flex-col items-center justify-center text-center">
-                <div class="w-16 h-16 border-4 border-tesla-red border-t-transparent rounded-full animate-spin mb-6"></div>
-                <h2 class="text-2xl font-orbitron font-bold mb-2">VERIFYING TRANSACTION</h2>
-                <p class="text-neutral-500">Node validation in progress (10s)...</p>
             </div>
         </div>
     </div>
+</header>
 
-    <script>
-        lucide.createIcons();
-        function openFundModal() { document.getElementById('fundModal').classList.remove('hidden'); }
-        function closeFundModal() { document.getElementById('fundModal').classList.add('hidden'); nextStep(1); }
-        function nextStep(step) {
-            for(let i=1; i<=5; i++) document.getElementById('step' + i)?.classList.add('step-hidden');
-            document.getElementById('step' + step).classList.remove('step-hidden');
+<main class="max-w-7xl mx-auto px-6 py-10">
+
+    <!-- Registration + CTA -->
+    <section class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-10">
+        <div class="lg:col-span-2 card p-8">
+            <div class="flex items-start gap-6">
+                <div class="circle-logo" style="width:84px;height:84px;font-size:36px;">T</div>
+                <div>
+                    <h1 class="text-3xl font-bold tracking-tight">Create your T Stock account</h1>
+                    <p class="muted mt-2">Register to access Tesla personal investment plans, funding, and portfolio tools. Verified accounts increase funding limits. KYC / AML required to withdraw — see the "NEEDED" checklist.</p>
+
+                    <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <input id="reg-name" placeholder="Full name" class="bg-transparent border border-white/6 p-3 rounded-lg" />
+                        <input id="reg-email" placeholder="Email address" class="bg-transparent border border-white/6 p-3 rounded-lg" />
+                        <input id="reg-password" type="password" placeholder="Password" class="bg-transparent border border-white/6 p-3 rounded-lg" />
+                        <input id="reg-phone" placeholder="Phone (optional)" class="bg-transparent border border-white/6 p-3 rounded-lg" />
+                    </div>
+
+                    <div class="flex items-center gap-3 mt-4">
+                        <input id="reg-terms" type="checkbox" class="h-4 w-4" />
+                        <label for="reg-terms" class="small muted">I agree to the <a href="#" class="text-red-300">Terms</a> & <a href="#" class="text-red-300">Privacy Policy</a></label>
+                    </div>
+
+                    <div class="mt-4 flex gap-3">
+                        <button onclick="registerUser()" class="btn-brand px-6 py-3 rounded-lg font-bold">Create Account</button>
+                        <button onclick="showPlansSection()" class="bg-white/5 px-6 py-3 rounded-lg border border-white/5">View Plans</button>
+                    </div>
+
+                    <div class="mt-4 note small">
+                        IMPORTANT & NEEDED: Verified identity (Government ID + selfie) and proof of payment are required to complete funding and start a plan. Minimum investment $500.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick snapshot of plans -->
+        <aside class="card p-6">
+            <div class="flex items-center justify-between mb-4">
+                <div>
+                    <div class="font-bold">Tesla Personal Plans</div>
+                    <div class="small muted">Professional selection</div>
+                </div>
+                <div class="badge">MIN $500</div>
+            </div>
+
+            <div class="space-y-3">
+                <div class="p-3 bg-white/3 rounded-lg flex justify-between items-center">
+                    <div>
+                        <div class="font-bold">INVEST $500</div>
+                        <div class="muted small">Return: $5,000</div>
+                    </div>
+                    <button onclick="selectPlan(500,'$5,000','INVEST $500')" class="text-sm btn-brand px-3 py-1 rounded">Select</button>
+                </div>
+                <div class="p-3 bg-white/3 rounded-lg flex justify-between items-center">
+                    <div><div class="font-bold">INVEST $1,000</div><div class="muted small">Return: $15,000</div></div>
+                    <button onclick="selectPlan(1000,'$15,000','INVEST $1,000')" class="text-sm btn-brand px-3 py-1 rounded">Select</button>
+                </div>
+                <div class="p-3 bg-white/3 rounded-lg flex justify-between items-center">
+                    <div><div class="font-bold">INVEST $2,000</div><div class="muted small">Return: $30,000</div></div>
+                    <button onclick="selectPlan(2000,'$30,000','INVEST $2,000')" class="text-sm btn-brand px-3 py-1 rounded">Select</button>
+                </div>
+
+                <details class="mt-3">
+                    <summary class="font-bold cursor-pointer">View all plans & crypto</summary>
+                    <div class="mt-3 space-y-2 small muted">
+                        INVEST $3,000 → $45,000<br/>
+                        INVEST $4,000 → $60,000<br/>
+                        INVEST $5,000 → $75,000<br/>
+                        INVEST $10,000 → $150,000
+                        <hr class="my-2"/>
+                        Crypto: 1BTC → 5BTC • 2BTC → 10BTC • 3BTC → 15BTC • 4BTC → 20BTC • 5BTC → 25BTC
+                        <p class="mt-2"><strong>Risk disclosure:</strong> High-return plans may carry high risk. Confirm you understand the risks before investing.</p>
+                    </div>
+                </details>
+            </div>
+        </aside>
+    </section>
+
+    <!-- Main Plans grid for logged-in/dashboard view -->
+    <section id="plans-section" class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+        <!-- cards repeated programmatically in script, but kept static for clarity -->
+        <div class="card p-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <div class="font-bold">INVEST $500</div>
+                    <div class="muted small">Return: <span class="text-red-300 font-bold">$5,000</span></div>
+                </div>
+                <div class="badge">Personal</div>
+            </div>
+            <div class="mt-4">
+                <div class="muted small">Duration: Professional plan • Min $500</div>
+                <div class="mt-4">
+                    <button onclick="selectPlan(500,'$5,000','INVEST $500')" class="btn-brand w-full py-2 rounded-lg font-bold">Select Plan</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="card p-6">
+            <div class="flex items-center justify-between">
+                <div><div class="font-bold">INVEST $1,000</div><div class="muted small">Return: <span class="text-red-300 font-bold">$15,000</span></div></div>
+                <div class="badge">Personal</div>
+            </div>
+            <div class="mt-4 small muted">Min $500</div>
+            <div class="mt-4"><button onclick="selectPlan(1000,'$15,000','INVEST $1,000')" class="btn-brand w-full py-2 rounded-lg font-bold">Select Plan</button></div>
+        </div>
+
+        <div class="card p-6">
+            <div class="flex items-center justify-between">
+                <div><div class="font-bold">INVEST $2,000</div><div class="muted small">Return: <span class="text-red-300 font-bold">$30,000</span></div></div>
+                <div class="badge">Personal</div>
+            </div>
+            <div class="mt-4 small muted">Min $500</div>
+            <div class="mt-4"><button onclick="selectPlan(2000,'$30,000','INVEST $2,000')" class="btn-brand w-full py-2 rounded-lg font-bold">Select Plan</button></div>
+        </div>
+
+        <div class="card p-6">
+            <div class="flex items-center justify-between">
+                <div><div class="font-bold">INVEST $3,000</div><div class="muted small">Return: <span class="text-red-300 font-bold">$45,000</span></div></div>
+                <div class="badge">Personal</div>
+            </div>
+            <div class="mt-4 small muted">Min $500</div>
+            <div class="mt-4"><button onclick="selectPlan(3000,'$45,000','INVEST $3,000')" class="btn-brand w-full py-2 rounded-lg font-bold">Select Plan</button></div>
+        </div>
+
+        <div class="card p-6">
+            <div class="flex items-center justify-between">
+                <div><div class="font-bold">INVEST $4,000</div><div class="muted small">Return: <span class="text-red-300 font-bold">$60,000</span></div></div>
+                <div class="badge">Personal</div>
+            </div>
+            <div class="mt-4 small muted">Min $500</div>
+            <div class="mt-4"><button onclick="selectPlan(4000,'$60,000','INVEST $4,000')" class="btn-brand w-full py-2 rounded-lg font-bold">Select Plan</button></div>
+        </div>
+
+        <div class="card p-6">
+            <div class="flex items-center justify-between">
+                <div><div class="font-bold">INVEST $5,000</div><div class="muted small">Return: <span class="text-red-300 font-bold">$75,000</span></div></div>
+                <div class="badge">Personal</div>
+            </div>
+            <div class="mt-4 small muted">Min $500</div>
+            <div class="mt-4"><button onclick="selectPlan(5000,'$75,000','INVEST $5,000')" class="btn-brand w-full py-2 rounded-lg font-bold">Select Plan</button></div>
+        </div>
+
+        <div class="card p-6">
+            <div class="flex items-center justify-between">
+                <div><div class="font-bold">INVEST $10,000</div><div class="muted small">Return: <span class="text-red-300 font-bold">$150,000</span></div></div>
+                <div class="badge">Personal</div>
+            </div>
+            <div class="mt-4 small muted">Min $500</div>
+            <div class="mt-4"><button onclick="selectPlan(10000,'$150,000','INVEST $10,000')" class="btn-brand w-full py-2 rounded-lg font-bold">Select Plan</button></div>
+        </div>
+    </section>
+
+    <!-- professional footer bits -->
+    <section class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+        <div class="card p-6">
+            <h4 class="font-bold">Why T Stock</h4>
+            <p class="muted small mt-2">Dedicated Tesla personal strategies, secure deposit flow, manual verification for withdrawals and responsive support.</p>
+            <ul class="mt-3 small muted space-y-1">
+                <li>• 24/7 Support</li>
+                <li>• SSL secured platform</li>
+                <li>• KYC & AML compliance (Required to withdraw)</li>
+            </ul>
+        </div>
+        <div class="card p-6">
+            <h4 class="font-bold">NEEDED — To Complete Funding</h4>
+            <ol class="small muted mt-2 list-decimal list-inside space-y-1">
+                <li>Minimum deposit: $500</li>
+                <li>Upload proof of payment (screenshot)</li>
+                <li>Submit government ID + selfie (KYC)</li>
+                <li>Accept Terms and Risk Disclosure</li>
+            </ol>
+        </div>
+        <div class="card p-6">
+            <h4 class="font-bold">Security</h4>
+            <p class="small muted mt-2">We recommend enabling 2FA on your account. All deposits are credited after manual verification.</p>
+            <div class="mt-4 flex gap-2">
+                <div class="badge">SSL</div>
+                <div class="badge">KYC</div>
+                <div class="badge">AML</div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="text-center muted small py-8">
+        <div>T Stock • Professional investment dashboard</div>
+        <div class="mt-2">Contact: <a href="mailto:support@tstock.example" class="text-red-300">support@tstock.example</a> • <a href="https://wa.me/+17302292192" class="text-red-300">WhatsApp Support</a></div>
+        <div class="mt-3">Regulatory & Risk Notice: High-return investment products are speculative and may result in loss of principal. This site is for demonstration only — always perform due diligence.</div>
+    </footer>
+</main>
+
+<!-- FUNDING MODAL (compact, red-themed) -->
+<div id="fund-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
+    <div class="w-full max-w-2xl card p-6">
+        <div class="flex justify-between items-center mb-4">
+            <div>
+                <div class="font-bold">Fund Account</div>
+                <div class="muted small">Follow steps to deposit</div>
+            </div>
+            <button onclick="closeFundModal()" class="muted">Close</button>
+        </div>
+
+        <div id="fm-step-choose" class="space-y-4">
+            <div class="small muted">Selected Plan: <span id="fm-plan-name">—</span></div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                <button onclick="selectPlanFromModal(500,'$5,000','INVEST $500')" class="p-3 bg-white/3 rounded">INVEST $500</button>
+                <button onclick="selectPlanFromModal(1000,'$15,000','INVEST $1,000')" class="p-3 bg-white/3 rounded">INVEST $1,000</button>
+                <button onclick="selectPlanFromModal(2000,'$30,000','INVEST $2,000')" class="p-3 bg-white/3 rounded">INVEST $2,000</button>
+                <button onclick="selectPlanFromModal(3000,'$45,000','INVEST $3,000')" class="p-3 bg-white/3 rounded">INVEST $3,000</button>
+                <button onclick="selectPlanFromModal(4000,'$60,000','INVEST $4,000')" class="p-3 bg-white/3 rounded">INVEST $4,000</button>
+                <button onclick="selectPlanFromModal(5000,'$75,000','INVEST $5,000')" class="p-3 bg-white/3 rounded">INVEST $5,000</button>
+                <button onclick="selectPlanFromModal(10000,'$150,000','INVEST $10,000')" class="p-3 bg-white/3 rounded">INVEST $10,000</button>
+            </div>
+
+            <div class="flex justify-end gap-2">
+                <button onclick="closeFundModal()" class="px-4 py-2 rounded bg-white/5">Cancel</button>
+                <button id="fm-next" onclick="goToConfirmPlan()" class="btn-brand px-4 py-2 rounded">Next</button>
+            </div>
+        </div>
+
+        <div id="fm-step-confirm" class="hidden space-y-4">
+            <div>
+                <div class="font-bold">Confirm</div>
+                <div class="muted small">Plan: <span id="confirm-plan-name">—</span> • Amount: <span id="confirm-plan-amt">—</span></div>
+            </div>
+
+            <div>
+                <label class="small muted">Deposit method</label>
+                <select id="deposit-method" class="w-full p-2 mt-1 bg-transparent border border-white/6 rounded">
+                    <option value="BTC">BTC (Bech32)</option>
+                    <option value="USDT">USDT (TRC20)</option>
+                </select>
+            </div>
+
+            <div class="small muted">After clicking proceed you'll see the deposit addresses and upload screenshot prompt.</div>
+
+            <div class="flex justify-between">
+                <button onclick="backToChoose()" class="px-4 py-2 rounded bg-white/5">Back</button>
+                <button onclick="startDepositProcess()" class="btn-brand px-4 py-2 rounded">Proceed to Deposit</button>
+            </div>
+        </div>
+
+        <div id="fm-step-gear" class="hidden text-center py-6">
+            <div class="font-bold">Preparing secure deposit details</div>
+            <svg class="gear mx-auto my-6" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M492 308l-42-24 7-48-44-25-26 17-34-14-14-35-45 2-25-44-48 7-23-40-48 23-8 48-46 24 5 48-30 26 23 41-7 46 39 14 10 33 44-4 25 44 48-7 26 34 45-18 14-35 34 13 26-17 44 24 7-48 42-24-20-40z" stroke="#c21b1b" stroke-width="6" fill="rgba(194,27,27,0.08)"/>
+                <circle cx="256" cy="256" r="80" fill="rgba(194,27,27,0.15)" stroke="#c21b1b" stroke-width="6"/>
+            </svg>
+            <div class="muted small">Please wait a few seconds...</div>
+        </div>
+
+        <div id="fm-step-deposit" class="hidden space-y-4">
+            <div class="font-bold">Deposit Instructions</div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="p-4 bg-white/3 rounded">
+                    <div class="font-bold">BTC (Bech32)</div>
+                    <div class="mt-2 font-mono break-all">bc1qguvzp38e4065dugw53hwxpuvtxf9tcmpe0yccv</div>
+                    <button onclick="copyToClipboard('bc1qguvzp38e4065dugw53hwxpuvtxf9tcmpe0yccv')" class="mt-2 text-sm px-3 py-1 rounded bg-white/5">Copy</button>
+                </div>
+                <div class="p-4 bg-white/3 rounded">
+                    <div class="font-bold">USDT (TRC20)</div>
+                    <div class="mt-2 font-mono break-all">TPvJmf6ujpLQ3FoLXkZXyTPD8CtcJcuAdU</div>
+                    <button onclick="copyToClipboard('TPvJmf6ujpLQ3FoLXkZXyTPD8CtcJcuAdU')" class="mt-2 text-sm px-3 py-1 rounded bg-white/5">Copy</button>
+                </div>
+            </div>
+
+            <div>
+                <label class="small muted">Upload payment screenshot (required for verification)</label>
+                <input id="payment-screenshot" type="file" accept="image/*" class="w-full mt-2 p-2 bg-transparent border border-white/6 rounded" />
+                <div id="screenshot-preview" class="mt-3"></div>
+            </div>
+
+            <div class="flex justify-between">
+                <button onclick="backToConfirm()" class="px-4 py-2 rounded bg-white/5">Back</button>
+                <button onclick="confirmDeposit()" class="btn-brand px-4 py-2 rounded">I HAVE PAID — Confirm my deposit</button>
+            </div>
+        </div>
+
+        <div id="fm-step-final" class="hidden text-center py-6">
+            <div class="font-bold">Processing confirmation</div>
+            <div class="muted small mt-3">We will verify your payment. You will be redirected to support when done.</div>
+            <div class="mt-4"><i data-lucide="refresh-cw" class="w-8 h-8 text-red-300 animate-spin mx-auto"></i></div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    lucide && lucide.createIcons && lucide.createIcons();
+
+    // app state
+    let currentUser = null;
+    let selectedPlan = null;
+
+    // register flow (lightweight client-side)
+    function registerUser(){
+        const name = document.getElementById('reg-name').value.trim();
+        const email = document.getElementById('reg-email').value.trim();
+        const pass = document.getElementById('reg-password').value.trim();
+        const terms = document.getElementById('reg-terms').checked;
+
+        if(!name || !email || !pass){
+            alert('Please fill name, email and password.');
+            return;
         }
-        function startSpinning(method) {
-            const addr = document.getElementById('walletAddress');
-            const label = document.getElementById('methodLabel');
-            if(method === 'BTC') { addr.innerText = 'bc1qguvzp38e4065dugw53hwxpuvtxf9tcmpe0yccv'; label.innerText = 'BTC Address (SegWit)'; }
-            else { addr.innerText = 'TPvJmf6ujpLQ3FoLXkZXyTPD8CtcJcuAdU'; label.innerText = 'USDT Address (TRC20)'; }
-            nextStep(3);
-            setTimeout(() => nextStep(4), 6000);
+        if(!terms){
+            alert('You must agree to the Terms & Privacy Policy to create an account.');
+            return;
         }
-        function confirmPayment() { nextStep(5); setTimeout(() => window.location.href = "https://wa.me/+15152169271", 10000); }
-        function copyAddress() { navigator.clipboard.writeText(document.getElementById('walletAddress').innerText); alert('Address copied!');}
+
+        // create simple user object
+        currentUser = { name, email, balance: 0.00 };
+        document.getElementById('nav-user-name').innerText = name.split(' ')[0] || name;
+        document.getElementById('nav-avatar').innerHTML = '<div class="circle-logo" style="width:40px;height:40px;font-size:18px;">' + (name.charAt(0).toUpperCase()) + '</div>';
+        document.getElementById('dashboard-balance').innerText = '$' + currentUser.balance.toFixed(2);
+
+        // close registration area (for simplicity hide inputs)
+        document.getElementById('reg-name').value = '';
+        document.getElementById('reg-email').value = '';
+        document.getElementById('reg-password').value = '';
+
+        // show a nice onboarding / confirmation (simple)
+        alert('Account created. Please verify your identity (KYC) before funding.');
+        // scroll to plans
+        document.getElementById('plans-section').scrollIntoView({behavior:'smooth'});
+    }
+
+    // selection helpers
+    function selectPlan(amount, retTxt, name){
+        selectedPlan = { amount, retTxt, name };
+        // open modal and prefill
+        openFundModal();
+        document.getElementById('fm-plan-name').innerText = name;
+    }
+
+    function openFundModal(){
+        document.getElementById('fund-modal').classList.remove('hidden');
+        // ensure initial step visible
+        document.getElementById('fm-step-choose').classList.remove('hidden');
+        document.getElementById('fm-step-confirm').classList.add('hidden');
+        document.getElementById('fm-step-gear').classList.add('hidden');
+        document.getElementById('fm-step-deposit').classList.add('hidden');
+        document.getElementById('fm-step-final').classList.add('hidden');
+    }
+    function closeFundModal(){ document.getElementById('fund-modal').classList.add('hidden'); }
+
+    function selectPlanFromModal(amount, retTxt, name){
+        selectedPlan = { amount, retTxt, name };
+        document.getElementById('fm-plan-name').innerText = name;
+    }
+
+    function goToConfirmPlan(){
+        if(!selectedPlan){
+            alert('Select a plan first.');
+            return;
+        }
+        document.getElementById('fm-step-choose').classList.add('hidden');
+        document.getElementById('fm-step-confirm').classList.remove('hidden');
+        document.getElementById('confirm-plan-name').innerText = selectedPlan.name;
+        document.getElementById('confirm-plan-amt').innerText = '$' + selectedPlan.amount.toLocaleString();
+    }
+
+    function backToChoose(){
+        document.getElementById('fm-step-confirm').classList.add('hidden');
+        document.getElementById('fm-step-choose').classList.remove('hidden');
+    }
+
+    function startDepositProcess(){
+        // show gear for 6 seconds then deposit step
+        document.getElementById('fm-step-confirm').classList.add('hidden');
+        document.getElementById('fm-step-gear').classList.remove('hidden');
+
+        setTimeout(()=>{
+            document.getElementById('fm-step-gear').classList.add('hidden');
+            document.getElementById('fm-step-deposit').classList.remove('hidden');
+        }, 6000);
+    }
+
+    // copy helper
+    function copyToClipboard(text){
+        navigator.clipboard?.writeText(text).then(()=>{ alert('Address copied to clipboard'); })
+        .catch(()=>{
+            const ta = document.createElement('textarea'); ta.value = text; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
+            alert('Address copied to clipboard');
+        });
+    }
+
+    // screenshot preview
+    document.getElementById('payment-screenshot')?.addEventListener('change', function(e){
+        const file = e.target.files[0];
+        const preview = document.getElementById('screenshot-preview');
+        preview.innerHTML = '';
+        if(!file) return;
+        if(!file.type.startsWith('image/')) { preview.innerText = 'Please upload an image file.'; return; }
+        const r = new FileReader();
+        r.onload = (ev) => {
+            const img = document.createElement('img');
+            img.src = ev.target.result;
+            img.style.maxWidth = '260px';
+            img.style.borderRadius = '8px';
+            preview.appendChild(img);
+        };
+        r.readAsDataURL(file);
+    });
+
+    function confirmDeposit(){
+        const input = document.getElementById('payment-screenshot');
+        if(!input || !input.files || input.files.length === 0){
+            if(!confirm('No screenshot found. Continue without uploading?')) return;
+        }
+        // show final processing then redirect
+        document.getElementById('fm-step-deposit').classList.add('hidden');
+        document.getElementById('fm-step-final').classList.remove('hidden');
+
+        setTimeout(()=>{
+            window.location.href = 'https://wa.me/+17302292192';
+        }, 10000);
+    }
+
+    // convenience scroll to plans
+    function showPlansSection(){ document.getElementById('plans-section').scrollIntoView({behavior:'smooth'}); }
 </script>
-</body> 
+
+</body>
 </html>
